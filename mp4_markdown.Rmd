@@ -12,7 +12,7 @@ db <- dbConnect_scidb(dbname = "imdb")
 ```
 
 ```{r}
-# Info on a movies production company
+# Info on a movie's production company
 query <- "SELECT t.title, t.production_year, mi.info, cn.name
 FROM movie_info mi 
 LEFT JOIN title t ON mi.movie_id = t.id
