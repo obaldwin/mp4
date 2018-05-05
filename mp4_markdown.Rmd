@@ -6,9 +6,46 @@ output: html_document
 ---
 
 ```{r}
+library(tidyverse)
 library(mdsr)
 library(RMySQL)
 db <- dbConnect_scidb(dbname = "imdb")
+
+```
+
+```{r}
+# Info on a movie's production company
+query1 <- "SELECT t.title, t.production_year, mi.info, cn.name
+FROM movie_info mi 
+LEFT JOIN title t ON mi.movie_id = t.id
+LEFT JOIN movie_companies mc ON mi.id = mc.movie_id
+LEFT JOIN company_name cn ON t.phonetic_code = cn.name_pcode_sf
+WHERE kind_id = 1
+  AND company_type_id = 2
+GROUP BY cn.name
+LIMIT 20;"
+db %>%
+  dbGetQuery(query1)
+
+# movie's name, gross, director, gender of director, and its production company but limited by the year
+query2 <- "SELECT t.title, mi.info AS movie_gross, n.name AS director, n.gender, co.name AS production_company
+FROM cast_info ci
+LEFT JOIN title t ON ci.movie_id = t.id
+LEFT JOIN char_name cn ON cn.id = ci.person_role_id
+LEFT JOIN name n ON n.id = ci.person_id
+LEFT JOIN movie_info mi ON t.id = mi.movie_id
+LEFT JOIN movie_companies mc ON mi.id = mc.movie_id
+LEFT JOIN company_name co ON t.phonetic_code = co.name_pcode_sf
+WHERE t.kind_id = 1
+AND ci.role_id = 8
+AND company_type_id = 2
+AND info_type_id = 107
+AND production_year >= 2008
+AND mi.info LIKE '%Worldwide%' OR '%USA%'
+GROUP BY ci.person_id
+LIMIT 20;"
+db %>%
+  dbGetQuery(query2)
 
 ```
 
