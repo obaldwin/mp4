@@ -13,7 +13,7 @@ db <- dbConnect_scidb(dbname = "imdb")
 
 ```{r}
 # Info on a movie's production company
-query <- "SELECT t.title, t.production_year, mi.info, cn.name
+query1 <- "SELECT t.title, t.production_year, mi.info, cn.name
 FROM movie_info mi 
 LEFT JOIN title t ON mi.movie_id = t.id
 LEFT JOIN movie_companies mc ON mi.id = mc.movie_id
@@ -22,8 +22,10 @@ WHERE kind_id = 1
   AND company_type_id = 2
 GROUP BY cn.name
 LIMIT 20;"
-
 db %>%
-  dbGetQuery(query)
+  dbGetQuery(query1)
+
+
+
 ```
 
