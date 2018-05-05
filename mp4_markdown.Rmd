@@ -9,5 +9,6 @@ output: html_document
 library(mdsr)
 library(RMySQL)
 db <- dbConnect_scidb(dbname = "imdb")
+
 ```
 
