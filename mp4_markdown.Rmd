@@ -44,8 +44,13 @@ AND mi.info LIKE '%Worldwide%' OR '%USA%'
 GROUP BY ci.person_id
 ORDER BY mi.info desc
 LIMIT 100;"
-db %>%
+# sacve table
+director_gender_prod_comp <- db %>%
   dbGetQuery(query2)
+# parse gross
+director_gender_prod_comp %>%
+  filter(!is.na(gender)) %>%
+  mutate(gross = parse_number(movie_gross))
 
 ```
 
