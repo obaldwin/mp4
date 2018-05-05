@@ -43,7 +43,7 @@ AND production_year >= 2008
 AND mi.info LIKE '%Worldwide%' OR '%USA%'
 GROUP BY ci.person_id
 LIMIT 100;"
-# sacve table
+# save table
 director_gender_prod_comp <- db %>%
   dbGetQuery(query2)
 # parse gross
