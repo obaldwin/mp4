@@ -24,7 +24,7 @@ LEFT JOIN movie_companies mc ON mi.id = mc.movie_id
 LEFT JOIN company_name cn ON t.phonetic_code = cn.name_pcode_sf
 WHERE kind_id = 1
 AND company_type_id = 2
-AND production_year >= 2008
+AND production_year >= 2000
 GROUP BY cn.name
 LIMIT 20;"
 db %>%
@@ -38,7 +38,7 @@ LEFT JOIN company_name cn ON t.phonetic_code = cn.name_pcode_sf
 WHERE mi.info_type_id = 4 AND mi.info LIKE '%English%'
 AND kind_id = 1
 #AND company.type_id = 2
-AND production_year >= 2008
+AND production_year >= 2000
 GROUP BY cn.name
 LIMIT 100;"
 lang_table <- db %>%
@@ -57,7 +57,7 @@ WHERE t.kind_id = 1
 AND ci.role_id = 8
 AND company_type_id = 2
 AND info_type_id = 107
-AND production_year >= 2008
+AND production_year >= 2000
 AND mi.info LIKE '%Worldwide%' OR '%USA%'
 GROUP BY ci.person_id;"
 # save tablhe
@@ -86,7 +86,16 @@ table_plot <- director_gender_prod_comp %>%
 table_plot %>%
   ggplot(aes(x = reorder(production_company,-sum_gross), y = sum_gross, fill = percent_f_director)) +
   geom_bar(stat = "identity", position = position_dodge()) +
-  scale_fill_gradient(high = "#032c6d", low = "#89b6ff") +
-  theme(axis.text.x = element_blank())
+  scale_fill_gradient(high = "#032c6d", low = "#89b6ff",
+                      breaks = c(0.00, 0.33, 0.66, 1.00),
+                      labels = c("0%", "33.3%", "66.7%", "100%")) +
+  theme(axis.text.x = element_blank()) +
+  labs(title = "Total Gross of Production Companies vs Gender Disparity of Directors",
+       x = "Production Companies",
+       y = "Total Gross, 2000-2018 ($)",
+       fill = "Percent of\nFemale Directors",
+       caption = "Source: Internet Movie Database") +
+  scale_y_continuous(breaks = c(0e+00, 2e+09, 4e+09, 6e+09, 8e+09),
+                     labels = c("0", "2 billion", "4 billion", "6 billion", "8 billion"))
 ```
 
