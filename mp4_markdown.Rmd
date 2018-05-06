@@ -2,7 +2,10 @@
 title: "Mini-Project 4"
 author: "Olivia Baldwin"
 date: "4/24/2018"
-output: html_document
+output:
+  html_document:
+    code_folding: hide
+    df_print: paged
 ---
 
 ```{r}
@@ -14,21 +17,35 @@ db <- dbConnect_scidb(dbname = "imdb")
 ```
 
 ```{r}
-# Info on a movie's production company
 query1 <- "SELECT t.title, t.production_year, mi.info, cn.name
-FROM movie_info mi 
+FROM movie_info mi
 LEFT JOIN title t ON mi.movie_id = t.id
 LEFT JOIN movie_companies mc ON mi.id = mc.movie_id
 LEFT JOIN company_name cn ON t.phonetic_code = cn.name_pcode_sf
 WHERE kind_id = 1
-  AND company_type_id = 2
+AND company_type_id = 2
+AND production_year >= 2008
 GROUP BY cn.name
 LIMIT 20;"
 db %>%
   dbGetQuery(query1)
+# language table
+query3 <- "SELECT t.id, t.title, mi.info AS lang, t.production_year AS production_year, cn.name AS production_company_name
+FROM title t
+JOIN movie_info mi ON mi.movie_id = t.id
+LEFT JOIN movie_companies mc ON mi.id = mc.movie_id
+LEFT JOIN company_name cn ON t.phonetic_code = cn.name_pcode_sf
+WHERE mi.info_type_id = 4 AND mi.info LIKE '%English%'
+AND kind_id = 1
+#AND company.type_id = 2
+AND production_year >= 2008
+GROUP BY cn.name
+LIMIT 100;"
+lang_table <- db %>%
+  dbGetQuery(query3)
 
 # movie's name, gross, director, gender of director, and its production company but limited by the year
-query2 <- "SELECT t.title, mi.info AS movie_gross, n.name AS director, n.gender, co.name AS production_company
+query2 <- "SELECT t.title, t.id, mi.info AS movie_gross, n.name AS director, n.gender, co.name AS production_company
 FROM cast_info ci
 LEFT JOIN title t ON ci.movie_id = t.id
 LEFT JOIN char_name cn ON cn.id = ci.person_role_id
@@ -51,5 +68,8 @@ director_gender_prod_comp %>%
   filter(!is.na(gender)) %>%
   mutate(gross = parse_number(movie_gross))
 
+tab1 <- left_join(lang_table, select(director_gender_prod_comp, id, title, movie_gross, director, gender), by = 'id')
+
+tab2 <- left_join(lang_table, select(director_gender_prod_comp, id, movie_gross, director, gender), by = 'id')
 ```
 
