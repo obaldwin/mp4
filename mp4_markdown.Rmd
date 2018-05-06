@@ -79,7 +79,8 @@ table_plot <- director_gender_prod_comp %>%
             sum_gross = sum(gross),
             percent_f_director = num_f/num_directors) %>%
   filter(sum_gross >= 300000000) %>%
-  filter(!is.na(production_company))
+  filter(!is.na(production_company)) %>%
+  arrange(desc(percent_f_director))
 
 table_plot %>%
   ggplot(aes(x = reorder(production_company,-sum_gross), y = sum_gross, fill = percent_f_director)) +
