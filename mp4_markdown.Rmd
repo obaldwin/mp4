@@ -63,12 +63,28 @@ GROUP BY ci.person_id;"
 director_gender_prod_comp <- db %>%
   dbGetQuery(query2)
 # parse gross
-director_gender_prod_comp %>%
+ director_gender_prod_comp <- director_gender_prod_comp %>%
   filter(!is.na(gender)) %>%
   mutate(gross = parse_number(movie_gross))
 
-tab1 <- left_join(lang_table, select(director_gender_prod_comp, id, title, movie_gross, director, gender), by = 'id')
+# tab1 <- left_join(lang_table, select(director_gender_prod_comp, id, title, movie_gross, director, gender), by = 'id')
+# 
+# tab2 <- left_join(lang_table, select(director_gender_prod_comp, id, movie_gross, director, gender), by = 'id')
 
-tab2 <- left_join(lang_table, select(director_gender_prod_comp, id, movie_gross, director, gender), by = 'id')
+table_plot <- director_gender_prod_comp %>%
+  mutate(is_femme = ifelse(gender == "f", 1, 0)) %>%
+  group_by(production_company) %>%
+  summarize(num_f = sum(is_femme),
+            num_directors = count(!is.na(director)),
+            sum_gross = sum(gross),
+            percent_f_director = num_f/num_directors) %>%
+  filter(sum_gross >= 300000000) %>%
+  filter(!is.na(production_company))
+
+table_plot %>%
+  ggplot(aes(x = reorder(production_company,-sum_gross), y = sum_gross, fill = percent_f_director)) +
+  geom_bar(stat = "identity", position = position_dodge()) +
+  scale_fill_gradient(high = "#032c6d", low = "#89b6ff") +
+  theme(axis.text.x = element_blank())
 ```
 
