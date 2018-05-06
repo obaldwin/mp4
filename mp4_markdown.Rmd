@@ -43,7 +43,7 @@ AND info_type_id = 107
 AND production_year >= 2008
 AND mi.info LIKE '%Worldwide%' OR '%USA%'
 GROUP BY ci.person_id;"
-# save table
+# save tablhe
 director_gender_prod_comp <- db %>%
   dbGetQuery(query2)
 # parse gross
