@@ -8,14 +8,14 @@ output:
     df_print: paged
 ---
 
-```{r}
+```{r message = FALSE, echo = FALSE}
 library(tidyverse)
 library(mdsr)
 library(RMySQL)
 db <- dbConnect_scidb(dbname = "imdb")
 ```
 
-```{r}
+```{r message = FALSE, echo = FALSE}
 query1 <- "SELECT t.title, t.production_year, mi.info, cn.name
 FROM movie_info mi
 LEFT JOIN title t ON mi.movie_id = t.id
