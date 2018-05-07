@@ -8,7 +8,7 @@ output:
     df_print: paged
 ---
 
-```{r}
+```{r message = FALSE, echo = FALSE}
 library(tidyverse)
 library(mdsr)
 library(RMySQL)
@@ -16,7 +16,7 @@ db <- dbConnect_scidb(dbname = "imdb")
 
 ```
 
-```{r}
+```{r message = FALSE, echo = FALSE}
 query1 <- "SELECT t.title, t.production_year, mi.info, cn.name
 FROM movie_info mi
 LEFT JOIN title t ON mi.movie_id = t.id
@@ -43,6 +43,7 @@ GROUP BY cn.name
 LIMIT 100;"
 lang_table <- db %>%
   dbGetQuery(query3)
+lang_table
 
 # movie's name, gross, director, gender of director, and its production company but limited by the year
 query2 <- "SELECT t.title, t.id, mi.info AS movie_gross, n.name AS director, n.gender, co.name AS production_company
@@ -67,6 +68,7 @@ director_gender_prod_comp <- db %>%
  director_gender_prod_comp <- director_gender_prod_comp %>%
   filter(!is.na(gender)) %>%
   mutate(gross = parse_number(movie_gross))
+ director_gender_prod_comp
 
 # tab1 <- left_join(lang_table, select(director_gender_prod_comp, id, title, movie_gross, director, gender), by = 'id')
 # 
@@ -82,6 +84,7 @@ table_plot <- director_gender_prod_comp %>%
   filter(sum_gross >= 300000000) %>%
   filter(!is.na(production_company)) %>%
   arrange(desc(percent_f_director))
+table_plot
 
 table_plot %>%
   ggplot(aes(x = reorder(production_company,-sum_gross), y = sum_gross, fill = percent_f_director)) +
