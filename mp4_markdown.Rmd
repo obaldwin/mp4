@@ -59,9 +59,9 @@ AND ci.role_id = 8
 AND company_type_id = 2
 AND info_type_id = 107
 AND production_year >= 2000
-AND mi.info LIKE '%Worldwide%' OR '%USA%'
+AND mi.info LIKE '%Worldwide%' OR '%(USA)%'
 GROUP BY ci.person_id;"
-# save tablhe
+# save table
 director_gender_prod_comp <- db %>%
   dbGetQuery(query2)
 # parse gross
