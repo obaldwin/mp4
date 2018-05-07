@@ -27,7 +27,7 @@ AND company_type_id = 2
 AND production_year >= 2000
 GROUP BY cn.name
 LIMIT 20;"
-db %>%
+#db %>%
   dbGetQuery(query1)
 # language table
 query3 <- "SELECT t.id, t.title, mi.info AS lang, t.production_year AS production_year, cn.name AS production_company_name
@@ -43,7 +43,7 @@ GROUP BY cn.name
 LIMIT 100;"
 lang_table <- db %>%
   dbGetQuery(query3)
-lang_table
+#lang_table
 
 # movie's name, gross, director, gender of director, and its production company but limited by the year
 query2 <- "SELECT t.title, t.id, mi.info AS movie_gross, n.name AS director, n.gender, co.name AS production_company
@@ -68,7 +68,7 @@ director_gender_prod_comp <- db %>%
  director_gender_prod_comp <- director_gender_prod_comp %>%
   filter(!is.na(gender)) %>%
   mutate(gross = parse_number(movie_gross))
- director_gender_prod_comp
+ #director_gender_prod_comp
 
 # tab1 <- left_join(lang_table, select(director_gender_prod_comp, id, title, movie_gross, director, gender), by = 'id')
 # 
