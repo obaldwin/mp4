@@ -123,13 +123,26 @@ table_plot %>%
   scale_y_continuous(breaks = c(0e+00, 2e+09, 4e+09, 6e+09, 8e+09),
                      labels = c("0", "2 billion", "4 billion", "6 billion", "8 billion"))
 
+table_3_plot <- director_gender_prod_comp %>%
+  mutate(is_femme = ifelse(gender == "f", 1, 0)) %>%
+  group_by(gender) %>%
+  summarize(num_films = n_distinct(title),
+            sum_gross = sum(gross),
+            avg_gross = sum_gross/num_films) %>%
+  filter(!is.na(gender)) %>%
+  arrange(desc(avg_gross))
+table_3_plot
+
+table_3_plot %>%
+  ggplot(aes(x = reorder(gender,-avg_gross), y = avg_gross, fill = gender)) +
+  geom_bar(stat = "identity", position = position_dodge())
+
 table_2_plot <- budget_plot %>%
   mutate(is_femme = ifelse(gender == "f", 1, 0)) %>%
   group_by(gender) %>%
   summarize(num_films = n_distinct(title),
             sum_budget = sum(budget),
             avg_budget = sum_budget/num_films) %>%
-  filter(avg_budget >= 100000) %>%
   filter(!is.na(gender)) %>%
   arrange(desc(avg_budget))
 table_2_plot
