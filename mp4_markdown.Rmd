@@ -28,7 +28,7 @@ AND production_year >= 2000
 GROUP BY cn.name
 LIMIT 20;"
 #db %>%
-  dbGetQuery(query1)
+#  dbGetQuery(query1)
 # language table
 query3 <- "SELECT t.id, t.title, mi.info AS lang, t.production_year AS production_year, cn.name AS production_company_name
 FROM title t
