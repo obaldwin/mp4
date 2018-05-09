@@ -1,7 +1,7 @@
 ---
-title: "Mini-Project 4"
-author: "Olivia Baldwin"
-date: "4/24/2018"
+title: "Glass Ceilings? In our film industry? It's more likely than you think."
+author: "Selina Ho, Beth Campbell, Olivia Baldwin"
+date: "05/08/2018"
 output:
   html_document:
     code_folding: hide
