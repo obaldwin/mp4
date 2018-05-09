@@ -13,7 +13,6 @@ library(tidyverse)
 library(mdsr)
 library(RMySQL)
 db <- dbConnect_scidb(dbname = "imdb")
-
 ```
 
 ```{r message = FALSE, echo = FALSE}
@@ -27,8 +26,8 @@ AND company_type_id = 2
 AND production_year >= 2000
 GROUP BY cn.name
 LIMIT 20;"
-db %>%
-  dbGetQuery(query1)
+#db %>%
+#  dbGetQuery(query1)
 # language table
 query3 <- "SELECT t.id, t.title, mi.info AS lang, t.production_year AS production_year, cn.name AS production_company_name
 FROM title t
@@ -43,7 +42,7 @@ GROUP BY cn.name
 LIMIT 100;"
 lang_table <- db %>%
   dbGetQuery(query3)
-lang_table
+#lang_table
 
 # movie's name, gross, director, gender of director, and its production company but limited by the year
 query2 <- "SELECT t.title, t.id, mi.info AS movie_gross, n.name AS director, n.gender, co.name AS production_company
@@ -61,6 +60,21 @@ AND info_type_id = 107
 AND production_year >= 2000
 AND mi.info LIKE '%Worldwide%' OR '%(USA)%'
 GROUP BY ci.person_id;"
+
+query4 <- "SELECT t.title, t.id, mi.info AS movie_budget, n.name AS director, n.gender, co.name AS production_company
+FROM cast_info ci
+LEFT JOIN title t ON ci.movie_id = t.id
+LEFT JOIN char_name cn ON cn.id = ci.person_role_id
+LEFT JOIN name n ON n.id = ci.person_id
+LEFT JOIN movie_info mi ON t.id = mi.movie_id
+LEFT JOIN movie_companies mc ON mi.id = mc.movie_id
+LEFT JOIN company_name co ON t.phonetic_code = co.name_pcode_sf
+WHERE t.kind_id = 1
+AND ci.role_id = 8
+AND company_type_id = 2
+AND info_type_id = 105
+AND production_year >= 2000
+GROUP BY ci.person_id;"
 # save table
 director_gender_prod_comp <- db %>%
   dbGetQuery(query2)
@@ -68,7 +82,15 @@ director_gender_prod_comp <- db %>%
  director_gender_prod_comp <- director_gender_prod_comp %>%
   filter(!is.na(gender)) %>%
   mutate(gross = parse_number(movie_gross))
- director_gender_prod_comp
+ 
+ budget_plot <- db %>%
+  dbGetQuery(query4)
+ 
+budget_plot <- budget_plot %>%
+  filter(!is.na(gender)) %>%
+  mutate(budget = parse_number(movie_budget))
+
+ #director_gender_prod_comp
 
 # tab1 <- left_join(lang_table, select(director_gender_prod_comp, id, title, movie_gross, director, gender), by = 'id')
 # 
@@ -100,5 +122,33 @@ table_plot %>%
        caption = "Source: Internet Movie Database") +
   scale_y_continuous(breaks = c(0e+00, 2e+09, 4e+09, 6e+09, 8e+09),
                      labels = c("0", "2 billion", "4 billion", "6 billion", "8 billion"))
+
+table_3_plot <- director_gender_prod_comp %>%
+  mutate(is_femme = ifelse(gender == "f", 1, 0)) %>%
+  group_by(gender) %>%
+  summarize(num_films = n_distinct(title),
+            sum_gross = sum(gross),
+            avg_gross = sum_gross/num_films) %>%
+  filter(!is.na(gender)) %>%
+  arrange(desc(avg_gross))
+table_3_plot
+
+table_3_plot %>%
+  ggplot(aes(x = reorder(gender,-avg_gross), y = avg_gross, fill = gender)) +
+  geom_bar(stat = "identity", position = position_dodge())
+
+table_2_plot <- budget_plot %>%
+  mutate(is_femme = ifelse(gender == "f", 1, 0)) %>%
+  group_by(gender) %>%
+  summarize(num_films = n_distinct(title),
+            sum_budget = sum(budget),
+            avg_budget = sum_budget/num_films) %>%
+  filter(!is.na(gender)) %>%
+  arrange(desc(avg_budget))
+table_2_plot
+
+table_2_plot %>%
+  ggplot(aes(x = reorder(gender,-avg_budget), y = avg_budget, fill = gender)) +
+  geom_bar(stat = "identity", position = position_dodge())
 ```
 
