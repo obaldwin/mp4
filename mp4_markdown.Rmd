@@ -118,7 +118,7 @@ table_plot %>%
                       breaks = c(0.00, 0.33, 0.66, 1.00),
                       labels = c("0%", "33.3%", "66.7%", "100%")) +
   theme(axis.text.x = element_blank()) +
-  labs(title = "Total Gross of Production Companies vs Gender Disparity of Directors",
+  labs(title = "Figure 1: Total Gross of Production Companies vs Gender Disparity of Directors",
        x = "Production Companies",
        y = "Total Gross, 2000-2018 ($)",
        fill = "Percent of\nFemale Directors",
@@ -138,7 +138,10 @@ table_3_plot
 
 table_3_plot %>%
   ggplot(aes(x = reorder(gender,-avg_gross), y = avg_gross, fill = gender)) +
-  geom_bar(stat = "identity", position = position_dodge())
+  geom_bar(stat = "identity", position = position_dodge()) + +
+  labs(title = "Figure 2: Average Film Gross by Gender of Director",
+       x = "Gender of Director",
+       y = "Average Gross, 2000-2018 ($)")
 
 table_2_plot <- budget_plot %>%
   mutate(is_femme = ifelse(gender == "f", 1, 0)) %>%
@@ -152,7 +155,11 @@ table_2_plot
 
 table_2_plot %>%
   ggplot(aes(x = reorder(gender,-avg_budget), y = avg_budget, fill = gender)) +
-  geom_bar(stat = "identity", position = position_dodge())
+  geom_bar(stat = "identity", position = position_dodge()) +
+  +
+  labs(title = "Figure 2: Average Budget by Gender of Director",
+       x = "Gender of Director",
+       y = "Average Budget, 2000-2018 ($)")
 
 ```
 Using the Internet Movie Database, we found movie production companies whose releases since 2000 grossed a total of over $300 million. And of those companies, we found what percentage of their directors are female. Across all gross amounts, female representation was extremely scarce. Over the span of 18 years, not one production company financed more than two female-helmed movies and the vast majority of companies financed zero. One company financed two, seven financed one, the other 84 companies financed zero female-directed movies. The production companies with the highest percentage of gender parity were predominantly earning the average gross profit with some companies in the upper echelons. 
