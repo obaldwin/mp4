@@ -14,7 +14,7 @@ library(mdsr)
 library(RMySQL)
 db <- dbConnect_scidb(dbname = "imdb")
 ```
-Glass ceilings? In our film industry? It’s more likely than you think.
+#Glass ceilings? In our film industry? It’s more likely than you think.
 
 We’ve recently witnessed the downfall of some of the most iconic men in Hollywood: Harvey Weinstein, Louis C.K, Bill Cosby, Charlie Rose, Kevin Spacey, Mario Batali, George Takei, etc. But troubling questions still linger: what other institutions were complicit in their behavior? Who else had known? What happens to the machine behind the man in the aftermath? Even as Charlie Rose is reportedly planning his comeback [^1], more revelations about how long complaints have been lodged against him and ignored are being published. The earliest instance of harassment the Washington Post found happened, shockingly, over three decades ago [^2]. In 1986, Annmarie Parr’s concerns about Rose’s lewd comments were dismissed by an unnamed senior producer. Throughout the decades, executive producer after executive producer continued this same pattern of behavior, calling Rose “harmless.” All of these questions lead us to a larger conversation about gender inequality: the importance of not only scrutinizing individual acts of misogyny but also dismantling structural inequality that creates this culture of impunity and behavior. One of the most touted reasons for inaction and willful ignorance of these men’s behavior is assurance of continued profit, so we wanted to find out if there was a relationship between the profits of a production company and the gender disparity of the directors they finance[^3]. However, we also acknowledge there are victims and perpetrators of harassment of every gender. 
 
